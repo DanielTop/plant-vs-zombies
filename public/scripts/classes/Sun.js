@@ -46,11 +46,11 @@ export default class Sun {
 
         if (!this.collect) {
             if (this.y <= this.finalYPos) {
-                this.y += 2;
+                this.y += 2 * this.game.gameSpeed;
             }
         } else {
-            this.x -= this.x / 10;
-            this.y -= this.y / 10;
+            this.x -= (this.x / 10) * this.game.gameSpeed;
+            this.y -= (this.y / 10) * this.game.gameSpeed;
         }
 
         if (this.x < 1 && this.y < 1) {

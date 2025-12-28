@@ -3,9 +3,25 @@ import Plant from "./Plant.js";
 
 export default class WallNut extends Plant {
     static cost = 60;
+    static upgradeable = true;
+
     constructor(game, x, y, w, h) {
         super(game, x, y, w, h);
-        this.health = 500;
+        this.baseHealth = 500;
+        this.health = this.baseHealth;
+        this.maxHealth = this.baseHealth;
+    }
+
+    getPlantName() {
+        return "WallNut";
+    }
+
+    applyUpgrade() {
+        // Increase max health by 50% per level
+        this.maxHealth = Math.floor(500 * (1 + (this.level - 1) * 0.5));
+        // Heal to full when upgrading
+        this.health = this.maxHealth;
+        console.log(`WallNut Lv${this.level}: maxHealth=${this.maxHealth}`);
     }
     // Initializes all the variables required for animation
     initPlantAnimation() {

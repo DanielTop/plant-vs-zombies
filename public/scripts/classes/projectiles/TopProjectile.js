@@ -7,9 +7,9 @@ export default class TopProjectile extends Projectile {
         this.topPos = y - CELL_HEIGHT;
     }
     update() {
-        this.x += this.speed;
+        this.x += this.speed * this.game.gameSpeed;
         if (this.y > this.topPos) {
-            this.y -= this.speed;
+            this.y -= this.speed * this.game.gameSpeed;
         }
         this.draw();
         this.checkCollision();

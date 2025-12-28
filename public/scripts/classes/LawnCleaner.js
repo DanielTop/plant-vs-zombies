@@ -16,7 +16,7 @@ export default class LawnCleaner {
 
     update() {
         if (this.cleaning) {
-            this.x += this.increment;
+            this.x += this.increment * this.game.gameSpeed;
         }
 
         this.game.zombies.forEach((zombie) => {

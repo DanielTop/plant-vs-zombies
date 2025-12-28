@@ -52,8 +52,8 @@ app.get("/", (_req, res) => {
     res.sendFile(`/public/index.html`);
 });
 
-app.listen(3000, () => {
-    console.log("Application listening on port 3000!");
+app.listen(3333, () => {
+    console.log("Application listening on port 3333!");
 });
 function newFunction() {
     return express();

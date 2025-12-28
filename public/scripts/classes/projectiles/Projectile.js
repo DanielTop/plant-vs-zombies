@@ -54,7 +54,7 @@ export default class Projectile {
     }
 
     update() {
-        this.x += this.speed;
+        this.x += this.speed * this.game.gameSpeed;
         this.draw();
         this.checkCollision();
     }

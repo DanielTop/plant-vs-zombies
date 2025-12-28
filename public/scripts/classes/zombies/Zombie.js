@@ -167,7 +167,7 @@ export default class Zombie {
 
     // Updates the positions and Animations
     update() {
-        this.x -= this.increment;
+        this.x -= this.increment * this.game.gameSpeed;
         if (this.attacking) {
             this.attackAnimation();
         }

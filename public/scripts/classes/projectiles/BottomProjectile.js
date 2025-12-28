@@ -7,9 +7,9 @@ export default class BottomProjectile extends Projectile {
         this.bottomPos = y + CELL_HEIGHT;
     }
     update() {
-        this.x += this.speed;
+        this.x += this.speed * this.game.gameSpeed;
         if (this.y < this.bottomPos) {
-            this.y += this.speed;
+            this.y += this.speed * this.game.gameSpeed;
         }
         this.draw();
         this.checkCollision();

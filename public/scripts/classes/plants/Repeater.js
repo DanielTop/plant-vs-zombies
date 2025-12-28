@@ -4,6 +4,26 @@ import { CELL_WIDTH, peaShoot, RepeaterSprite } from "../../constants.js";
 
 export default class Repeater extends Plant {
     static cost = 40;
+    static upgradeable = true;
+
+    initPlantSpec() {
+        super.initPlantSpec();
+        this.bulletDamage = 10;
+        this.attackInterval = 100;
+    }
+
+    getPlantName() {
+        return "Repeater";
+    }
+
+    applyUpgrade() {
+        // Increase damage by 5 per level
+        this.bulletDamage = 10 + (this.level - 1) * 5;
+        // Reduce attack interval by 10% per level
+        this.attackInterval = Math.floor(100 * Math.pow(0.9, this.level - 1));
+        console.log(`Repeater Lv${this.level}: damage=${this.bulletDamage}, interval=${this.attackInterval}`);
+    }
+
     initPlantAnimation() {
         // Animation support variables
         this.startFrameX = 0;
@@ -33,7 +53,7 @@ export default class Repeater extends Plant {
     attack() {
         // Denotes the plant is ready to attack and
         // is waiting for the right animation frame of attack
-        if (this.game.frames % 100 == 0) {
+        if (this.game.frames % this.attackInterval == 0) {
             this.attackNow = true;
         }
 
@@ -46,26 +66,26 @@ export default class Repeater extends Plant {
             this.attackNow = false;
 
             this.game.volume && peaShoot.play();
-            this.game.projectiles.push(
-                new Projectile(
-                    this.game,
-                    this.x + CELL_WIDTH / 2,
-                    this.y + 24,
-                    this.bulletW,
-                    this.bulletH
-                )
+            const proj1 = new Projectile(
+                this.game,
+                this.x + CELL_WIDTH / 2,
+                this.y + 24,
+                this.bulletW,
+                this.bulletH
             );
+            proj1.damage = this.bulletDamage;
+            this.game.projectiles.push(proj1);
 
             this.game.volume && peaShoot.play();
-            this.game.projectiles.push(
-                new Projectile(
-                    this.game,
-                    this.x + CELL_WIDTH / 2 + this.bulletW,
-                    this.y + 24,
-                    this.bulletW,
-                    this.bulletH
-                )
+            const proj2 = new Projectile(
+                this.game,
+                this.x + CELL_WIDTH / 2 + this.bulletW,
+                this.y + 24,
+                this.bulletW,
+                this.bulletH
             );
+            proj2.damage = this.bulletDamage;
+            this.game.projectiles.push(proj2);
         }
     }
 }

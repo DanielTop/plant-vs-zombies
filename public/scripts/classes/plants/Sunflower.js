@@ -4,6 +4,14 @@ import { CELL_HEIGHT, SunflowerSprite } from "../../constants.js";
 
 export default class Sunflower extends Plant {
     static cost = 25;
+    static upgradeable = true;
+
+    initPlantSpec() {
+        super.initPlantSpec();
+        this.sunSpawnInterval = 2000; // Base interval for sun spawn
+        this.sunValue = 25; // Base sun value
+    }
+
     initPlantAnimation() {
         // Animation support variables
         this.startFrameX = 0;
@@ -28,21 +36,33 @@ export default class Sunflower extends Plant {
         this.frame = 1;
     }
 
+    getPlantName() {
+        return "Sunflower";
+    }
+
+    applyUpgrade() {
+        // Reduce sun spawn interval by 15% per level
+        this.sunSpawnInterval = Math.floor(2000 * Math.pow(0.85, this.level - 1));
+        // Increase sun value by 5 per level
+        this.sunValue = 25 + (this.level - 1) * 5;
+        console.log(`Sunflower Lv${this.level}: interval=${this.sunSpawnInterval}, value=${this.sunValue}`);
+    }
+
     // Loads the sprite of the zombie
     loadSprite() {
         this.plantType = SunflowerSprite;
     }
 
     spwanSun() {
-        if (this.frame % 2000 === 0) {
-            this.game.suns.push(
-                new Sun(
-                    this.game,
-                    this.x,
-                    this.y + CELL_HEIGHT - 50,
-                    this.y - 40
-                )
+        if (this.frame % this.sunSpawnInterval === 0) {
+            const sun = new Sun(
+                this.game,
+                this.x,
+                this.y + CELL_HEIGHT - 50,
+                this.y - 40
             );
+            sun.value = this.sunValue;
+            this.game.suns.push(sun);
         }
     }
 

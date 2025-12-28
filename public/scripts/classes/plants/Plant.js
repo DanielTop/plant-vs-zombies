@@ -26,12 +26,51 @@ export default class Plant {
     initPlantSpec() {
         // Life
         this.health = 100;
+        this.maxHealth = 100;
         this.bulletW = 60;
         this.bulletH = 40;
 
         // Plant status
         this.attacking = false;
         this.cooldown = false;
+
+        // Upgrade system
+        this.level = 1;
+        this.maxLevel = 5;
+        this.baseUpgradeCost = 40;
+        // Copy static upgradeable to instance for reliable access
+        this.upgradeable = this.constructor.upgradeable || false;
+    }
+
+    // Get upgrade cost for current level
+    getUpgradeCost() {
+        if (this.level >= this.maxLevel) return null;
+        return this.baseUpgradeCost + (this.level - 1) * 25;
+    }
+
+    // Check if plant can be upgraded
+    canUpgrade(sunCount) {
+        return this.level < this.maxLevel && sunCount >= this.getUpgradeCost();
+    }
+
+    // Upgrade the plant - override in subclasses for specific behavior
+    upgrade() {
+        if (this.level >= this.maxLevel) return false;
+        this.level++;
+        console.log(`Upgraded ${this.getPlantName()} to level ${this.level}`);
+        this.applyUpgrade();
+        return true;
+    }
+
+    // Apply upgrade effects - override in subclasses
+    applyUpgrade() {
+        // Default: increase health by 20%
+        this.health *= 1.2;
+    }
+
+    // Get plant name for display
+    getPlantName() {
+        return "Plant";
     }
 
     // Initializes all the variables required for animation
@@ -77,6 +116,76 @@ export default class Plant {
             this.w + this.offsetW,
             this.h + this.offsetH
         );
+
+        // Draw level indicator if upgradeable and level > 1
+        if (this.upgradeable && this.level > 1) {
+            this.drawLevelIndicator();
+        }
+
+        // Draw health bar if damaged
+        this.drawHealthBar();
+    }
+
+    // Draw health bar above plant
+    drawHealthBar() {
+        const maxHealth = this.maxHealth || 100;
+        const healthPercent = this.health / maxHealth;
+
+        // Only show if damaged
+        if (healthPercent >= 1) return;
+
+        const barWidth = this.w - 10;
+        const barHeight = 8;
+        const barX = this.x + 5;
+        const barY = this.y - 12;
+
+        // Background
+        ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+
+        // Health fill
+        let healthColor;
+        if (healthPercent > 0.6) {
+            healthColor = "#4CAF50"; // Green
+        } else if (healthPercent > 0.3) {
+            healthColor = "#FFC107"; // Yellow
+        } else {
+            healthColor = "#F44336"; // Red
+        }
+        ctx.fillStyle = healthColor;
+        ctx.fillRect(barX, barY, barWidth * healthPercent, barHeight);
+
+        // Border
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(barX, barY, barWidth, barHeight);
+    }
+
+    // Draw level badge on the plant
+    drawLevelIndicator() {
+        const badgeX = this.x + this.w - 15;
+        const badgeY = this.y + 5;
+        const badgeSize = 22;
+
+        // Badge background
+        ctx.fillStyle = this.level >= this.maxLevel ? "#FFD700" : "#4CAF50";
+        ctx.beginPath();
+        ctx.arc(badgeX, badgeY, badgeSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Badge border
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Level number
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 14px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(this.level.toString(), badgeX, badgeY);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
     }
 
     // If the plant collides with zombie then the plant health decreases

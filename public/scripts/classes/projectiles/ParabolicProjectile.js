@@ -73,8 +73,8 @@ export default class ParabolicProjectile extends Projectile {
     }
 
     update() {
-        this.theta += this.d_theta;
-        this.x += this.speed;
+        this.theta += this.d_theta * this.game.gameSpeed;
+        this.x += this.speed * this.game.gameSpeed;
         this.y =
             this.temp -
             Math.sin((this.theta * Math.PI) / 180) * this.targetDist * 0.2;

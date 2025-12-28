@@ -15,6 +15,26 @@ import Plant from "./Plant.js";
 
 export default class ThreePeaShooter extends Plant {
     static cost = 100;
+    static upgradeable = true;
+
+    initPlantSpec() {
+        super.initPlantSpec();
+        this.bulletDamage = 10;
+        this.attackInterval = 100;
+    }
+
+    getPlantName() {
+        return "ThreePeaShooter";
+    }
+
+    applyUpgrade() {
+        // Increase damage by 5 per level
+        this.bulletDamage = 10 + (this.level - 1) * 5;
+        // Reduce attack interval by 10% per level
+        this.attackInterval = Math.floor(100 * Math.pow(0.9, this.level - 1));
+        console.log(`ThreePeaShooter Lv${this.level}: damage=${this.bulletDamage}, interval=${this.attackInterval}`);
+    }
+
     // Initializes all the variables required for animation
     initPlantAnimation() {
         // Animation support variables
@@ -43,7 +63,7 @@ export default class ThreePeaShooter extends Plant {
     }
 
     attack() {
-        if (this.game.frames % 100 == 0) {
+        if (this.game.frames % this.attackInterval == 0) {
             this.attackNow = true;
         }
         if (
@@ -55,27 +75,27 @@ export default class ThreePeaShooter extends Plant {
             this.attackNow = false;
             this.game.volume && peaShoot.play();
             // Middle projectile
-            this.game.projectiles.push(
-                new Projectile(
+            const midProj = new Projectile(
+                this.game,
+                this.x + CELL_WIDTH / 2 + 28,
+                this.y + 28,
+                this.bulletW,
+                this.bulletH
+            );
+            midProj.damage = this.bulletDamage;
+            this.game.projectiles.push(midProj);
+
+            // Fires top projectile only if the plant is not in the top boundary
+            if (!(this.y - CELL_HEIGHT <= GRID_ROW_START_POS)) {
+                const topProj = new TopProjectile(
                     this.game,
                     this.x + CELL_WIDTH / 2 + 28,
                     this.y + 28,
                     this.bulletW,
                     this.bulletH
-                )
-            );
-
-            // Fires top projectile only if the plant is not in the top boundary
-            if (!(this.y - CELL_HEIGHT <= GRID_ROW_START_POS)) {
-                this.game.projectiles.push(
-                    new TopProjectile(
-                        this.game,
-                        this.x + CELL_WIDTH / 2 + 28,
-                        this.y + 28,
-                        this.bulletW,
-                        this.bulletH
-                    )
                 );
+                topProj.damage = this.bulletDamage;
+                this.game.projectiles.push(topProj);
             }
 
             // Fires bottom projectile only if the plant is not in the bottom boundary
@@ -83,15 +103,15 @@ export default class ThreePeaShooter extends Plant {
                 this.y + CELL_HEIGHT <
                 5 * CELL_HEIGHT + GRID_ROW_START_POS + CELL_PAD
             ) {
-                this.game.projectiles.push(
-                    new BottomProjectile(
-                        this.game,
-                        this.x + CELL_WIDTH / 2 + 28,
-                        this.y + 28,
-                        this.bulletW,
-                        this.bulletH
-                    )
+                const botProj = new BottomProjectile(
+                    this.game,
+                    this.x + CELL_WIDTH / 2 + 28,
+                    this.y + 28,
+                    this.bulletW,
+                    this.bulletH
                 );
+                botProj.damage = this.bulletDamage;
+                this.game.projectiles.push(botProj);
             }
         }
     }

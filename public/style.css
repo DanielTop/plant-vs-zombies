@@ -108,6 +108,88 @@ a {
     display: none;
 }
 
+/* Difficulty Selection */
+.difficulty-select {
+    position: absolute;
+    bottom: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    text-align: center;
+}
+
+.difficulty-title {
+    font-size: 48px;
+    color: #fff;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px;
+}
+
+.difficulty-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.difficulty-btn {
+    background: linear-gradient(180deg, #5a8f3e 0%, #3d6b29 100%);
+    border: 4px solid #2d4f1e;
+    border-radius: 15px;
+    padding: 20px 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 180px;
+    font-family: "Creepster", cursive;
+}
+
+.difficulty-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(180deg, #6ba84a 0%, #4a8232 100%);
+    box-shadow: 0 0 20px rgba(107, 168, 74, 0.6);
+}
+
+.difficulty-btn[data-difficulty="easy"] {
+    background: linear-gradient(180deg, #4a9f4a 0%, #2d7a2d 100%);
+    border-color: #1e5a1e;
+}
+
+.difficulty-btn[data-difficulty="easy"]:hover {
+    background: linear-gradient(180deg, #5cb85c 0%, #3d943d 100%);
+}
+
+.difficulty-btn[data-difficulty="normal"] {
+    background: linear-gradient(180deg, #c9a227 0%, #9a7b1c 100%);
+    border-color: #7a5f14;
+}
+
+.difficulty-btn[data-difficulty="normal"]:hover {
+    background: linear-gradient(180deg, #e0b830 0%, #b39020 100%);
+}
+
+.difficulty-btn[data-difficulty="hard"] {
+    background: linear-gradient(180deg, #a83232 0%, #7a1e1e 100%);
+    border-color: #5a1414;
+}
+
+.difficulty-btn[data-difficulty="hard"]:hover {
+    background: linear-gradient(180deg, #c03c3c 0%, #942828 100%);
+}
+
+.diff-name {
+    display: block;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.diff-desc {
+    display: block;
+    font-size: 14px;
+    color: #ddd;
+    margin-top: 5px;
+    font-family: Arial, sans-serif;
+}
+
 /* Loading spinner animation */
 
 .loading {
