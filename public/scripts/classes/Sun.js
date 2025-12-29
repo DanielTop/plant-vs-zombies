@@ -38,7 +38,7 @@ export default class Sun {
     }
 
     update() {
-        if (this.game.frames % 5 === 0) {
+        if (this.game.frames % 5 < this.game.gameSpeed) {
             this.frameX < this.maxFrame
                 ? this.frameX++
                 : (this.frameX = this.minFrame);

@@ -21,7 +21,10 @@ export default class Repeater extends Plant {
         this.bulletDamage = 10 + (this.level - 1) * 5;
         // Reduce attack interval by 10% per level
         this.attackInterval = Math.floor(100 * Math.pow(0.9, this.level - 1));
-        console.log(`Repeater Lv${this.level}: damage=${this.bulletDamage}, interval=${this.attackInterval}`);
+    }
+
+    getUpgradeBenefit() {
+        return "+5 Damage, +10% Speed";
     }
 
     initPlantAnimation() {
@@ -53,7 +56,7 @@ export default class Repeater extends Plant {
     attack() {
         // Denotes the plant is ready to attack and
         // is waiting for the right animation frame of attack
-        if (this.game.frames % this.attackInterval == 0) {
+        if (this.game.frames % this.attackInterval < this.game.gameSpeed) {
             this.attackNow = true;
         }
 

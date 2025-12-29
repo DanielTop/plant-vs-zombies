@@ -143,7 +143,7 @@ export default class Zombie {
 
     // Loops the animation between the start frame and end frame
     loopAnimation() {
-        if (this.game.frames % this.animationSpeed === 0) {
+        if (this.game.frames % this.animationSpeed < this.game.gameSpeed) {
             if (this.frameY < this.endFrameY) {
                 if (this.frameX < this.maxFrame) {
                     this.frameX++;

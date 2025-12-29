@@ -3,6 +3,30 @@ import { CELL_WIDTH, chomp, ChomperSprite } from "../../constants.js";
 
 export default class Chomper extends Plant {
     static cost = 50;
+    static upgradeable = true;
+
+    initPlantSpec() {
+        super.initPlantSpec();
+        this.cooldownTime = 600; // Base cooldown in frames (~10 sec at 60fps)
+        this.attackRange = 50; // Base attack range
+        this.cooldownEndFrame = 0; // Track when cooldown ends
+    }
+
+    getPlantName() {
+        return "Chomper";
+    }
+
+    applyUpgrade() {
+        // Reduce cooldown by 15% per level
+        this.cooldownTime = Math.floor(600 * Math.pow(0.85, this.level - 1));
+        // Increase attack range by 20 per level
+        this.attackRange = 50 + (this.level - 1) * 20;
+    }
+
+    getUpgradeBenefit() {
+        return "-15% Cooldown, +Range";
+    }
+
     initPlantAnimation() {
         // Animation support variables
         this.startFrameX = 0;
@@ -55,33 +79,35 @@ export default class Chomper extends Plant {
     }
 
     attack() {
+        // Check if cooldown has ended (frames-based, respects game speed)
+        if (this.cooldown && this.game.frames >= this.cooldownEndFrame) {
+            this.cooldown = false;
+            this.frameX = 0;
+            this.frameY = 0;
+        }
+
         if (this.attacking && !this.cooldown) {
             this.game.zombies.every((zombie) => {
                 if (
                     zombie.y === this.y &&
-                    zombie.x - (this.x + this.w) <= CELL_WIDTH - 50 &&
+                    zombie.x - (this.x + this.w) <= CELL_WIDTH - this.attackRange &&
                     zombie.x - (this.x + this.w) >= -CELL_WIDTH
                 ) {
                     // Set the attacking mode true
                     this.attackNow = true;
                     this.cooldown = true;
 
+                    // Set cooldown end frame (respects game speed)
+                    this.cooldownEndFrame = this.game.frames + this.cooldownTime;
+
                     // Set the frame on attacking animation frame
                     this.frameX = 9;
                     this.frameY = 3;
 
-                    // Eat the zombik
+                    // Eat the zombie
                     this.game.volume && chomp.play();
                     zombie.delete = true;
                     this.game.score += 10;
-
-                    // Give a cooldown of 10 sec before it can eat again and
-                    // reset the animation frame
-                    setTimeout(() => {
-                        this.cooldown = false;
-                        this.frameX = 0;
-                        this.frameY = 0;
-                    }, 10000);
 
                     // stop the loop
                     return false;

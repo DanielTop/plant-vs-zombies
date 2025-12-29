@@ -32,7 +32,10 @@ export default class ThreePeaShooter extends Plant {
         this.bulletDamage = 10 + (this.level - 1) * 5;
         // Reduce attack interval by 10% per level
         this.attackInterval = Math.floor(100 * Math.pow(0.9, this.level - 1));
-        console.log(`ThreePeaShooter Lv${this.level}: damage=${this.bulletDamage}, interval=${this.attackInterval}`);
+    }
+
+    getUpgradeBenefit() {
+        return "+5 Damage, +10% Speed";
     }
 
     // Initializes all the variables required for animation
@@ -63,7 +66,7 @@ export default class ThreePeaShooter extends Plant {
     }
 
     attack() {
-        if (this.game.frames % this.attackInterval == 0) {
+        if (this.game.frames % this.attackInterval < this.game.gameSpeed) {
             this.attackNow = true;
         }
         if (

@@ -45,7 +45,10 @@ export default class Sunflower extends Plant {
         this.sunSpawnInterval = Math.floor(2000 * Math.pow(0.85, this.level - 1));
         // Increase sun value by 5 per level
         this.sunValue = 25 + (this.level - 1) * 5;
-        console.log(`Sunflower Lv${this.level}: interval=${this.sunSpawnInterval}, value=${this.sunValue}`);
+    }
+
+    getUpgradeBenefit() {
+        return "+5 Sun, +15% Faster";
     }
 
     // Loads the sprite of the zombie
@@ -54,7 +57,7 @@ export default class Sunflower extends Plant {
     }
 
     spwanSun() {
-        if (this.frame % this.sunSpawnInterval === 0) {
+        if (this.frame % this.sunSpawnInterval < this.game.gameSpeed) {
             const sun = new Sun(
                 this.game,
                 this.x,
@@ -70,6 +73,6 @@ export default class Sunflower extends Plant {
         super.update();
         this.spwanSun();
         this.draw();
-        this.frame += 1;
+        this.frame += this.game.gameSpeed;
     }
 }

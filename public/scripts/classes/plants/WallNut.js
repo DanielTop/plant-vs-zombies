@@ -21,7 +21,10 @@ export default class WallNut extends Plant {
         this.maxHealth = Math.floor(500 * (1 + (this.level - 1) * 0.5));
         // Heal to full when upgrading
         this.health = this.maxHealth;
-        console.log(`WallNut Lv${this.level}: maxHealth=${this.maxHealth}`);
+    }
+
+    getUpgradeBenefit() {
+        return "+50% HP, Full Heal";
     }
     // Initializes all the variables required for animation
     initPlantAnimation() {

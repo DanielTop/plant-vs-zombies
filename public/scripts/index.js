@@ -579,7 +579,7 @@ class Game {
         }
 
         // If frames is equal to zombie spawn rate spawn zombie
-        if (this.frames % this.zombiesSpawnRate === 0) {
+        if (this.frames % this.zombiesSpawnRate < this.gameSpeed) {
             // Get available zombies for current wave
             const availableZombies = this.getAvailableZombies();
 
@@ -620,7 +620,7 @@ class Game {
     // Manages all the suns
     manageSuns() {
         const sunRate = this.diffSettings ? this.diffSettings.sunSpawnRate : 400;
-        if (this.frames % sunRate === 0) {
+        if (this.frames % sunRate < this.gameSpeed) {
             // Randomly select the position for the sun to spawn
             let x =
                 Math.random() * (canvas.width - CELL_WIDTH * 2) +
@@ -873,33 +873,44 @@ class Game {
             const tooltipX = plant.x + plant.w / 2;
             const tooltipY = plant.y - 10;
 
-            // Tooltip background
-            const tooltipW = 120;
-            const tooltipH = plant.level < plant.maxLevel ? 55 : 40;
+            // Get upgrade benefit text
+            const benefitText = plant.getUpgradeBenefit ? plant.getUpgradeBenefit() : "";
+            const hasNextLevel = plant.level < plant.maxLevel;
 
-            ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+            // Tooltip background - taller if showing benefits
+            const tooltipW = 150;
+            const tooltipH = hasNextLevel ? (benefitText ? 75 : 55) : 40;
+
+            ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
             ctx.beginPath();
             ctx.roundRect(tooltipX - tooltipW / 2, tooltipY - tooltipH, tooltipW, tooltipH, 8);
             ctx.fill();
 
             // Tooltip text
             ctx.fillStyle = "#fff";
-            ctx.font = "16px Creepster";
+            ctx.font = "14px Creepster";
             ctx.textAlign = "center";
 
             // Plant name and level
             const levelText = `${plant.getPlantName()} Lv.${plant.level}`;
-            ctx.fillText(levelText, tooltipX, tooltipY - tooltipH + 20);
+            ctx.fillText(levelText, tooltipX, tooltipY - tooltipH + 18);
 
-            // Upgrade cost (if not max level)
-            if (plant.level < plant.maxLevel) {
+            // Upgrade cost and benefit (if not max level)
+            if (hasNextLevel) {
                 const cost = plant.getUpgradeCost();
                 const canAfford = this.sunCounts >= cost;
                 ctx.fillStyle = canAfford ? "#ffcc00" : "#ff6666";
-                ctx.fillText(`Upgrade: ${cost}`, tooltipX, tooltipY - tooltipH + 42);
+                ctx.fillText(`Upgrade: ${cost} ☀`, tooltipX, tooltipY - tooltipH + 38);
+
+                // Show benefit
+                if (benefitText) {
+                    ctx.fillStyle = "#88ff88";
+                    ctx.font = "12px Creepster";
+                    ctx.fillText(benefitText, tooltipX, tooltipY - tooltipH + 58);
+                }
             } else {
                 ctx.fillStyle = "#00ff00";
-                ctx.fillText("MAX LEVEL", tooltipX, tooltipY - tooltipH + 20);
+                ctx.fillText("MAX LEVEL", tooltipX, tooltipY - tooltipH + 18);
             }
 
             ctx.textAlign = "left";
